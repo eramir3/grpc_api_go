@@ -8,7 +8,6 @@ import (
 	"grpcapi/pkg/utils"
 	pb "grpcapi/proto/gen"
 
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
@@ -33,7 +32,7 @@ func AddTeachersToDb(ctx context.Context, teachersFromReq []*pb.Teacher) ([]*pb.
 			return nil, utils.ErrorHandler(err, "Error adding value to database")
 		}
 
-		objectId, ok := result.InsertedID.(primitive.ObjectID)
+		objectId, ok := result.InsertedID.(bson.ObjectID)
 		if ok {
 			teacher.Id = objectId.Hex()
 		}
@@ -44,7 +43,7 @@ func AddTeachersToDb(ctx context.Context, teachersFromReq []*pb.Teacher) ([]*pb.
 	return addedTeachers, nil
 }
 
-func GetTeachersFromDb(ctx context.Context, sortOptions primitive.D, filter primitive.M) ([]*pb.Teacher, error) {
+func GetTeachersFromDb(ctx context.Context, sortOptions bson.D, filter bson.M) ([]*pb.Teacher, error) {
 	client, err := CreateMongoClient()
 	if err != nil {
 		return nil, utils.ErrorHandler(err, "Internal Error")
@@ -88,7 +87,7 @@ func ModifyTeachersInDb(ctx context.Context, pbTeachers []*pb.Teacher) ([]*pb.Te
 
 		modelTeacher := mapPbTeacherToModelTeacher(teacher)
 
-		objId, err := primitive.ObjectIDFromHex(teacher.Id)
+		objId, err := bson.ObjectIDFromHex(teacher.Id)
 		if err != nil {
 			return nil, utils.ErrorHandler(err, "Invalid Id")
 		}
@@ -126,9 +125,9 @@ func DeleteTeachersFromDb(ctx context.Context, teacherIdsToDelete []string) ([]s
 	}
 	defer client.Disconnect(ctx)
 
-	objectIds := make([]primitive.ObjectID, len(teacherIdsToDelete))
+	objectIds := make([]bson.ObjectID, len(teacherIdsToDelete))
 	for i, id := range teacherIdsToDelete {
-		objectId, err := primitive.ObjectIDFromHex(id)
+		objectId, err := bson.ObjectIDFromHex(id)
 		if err != nil {
 			return nil, utils.ErrorHandler(err, fmt.Sprintf("incorrect id: %v", id))
 		}
@@ -159,7 +158,7 @@ func GetStudentsByTeacherIdFromDb(ctx context.Context, teacherId string) ([]*pb.
 	}
 	defer client.Disconnect(ctx)
 
-	objId, err := primitive.ObjectIDFromHex(teacherId)
+	objId, err := bson.ObjectIDFromHex(teacherId)
 	if err != nil {
 		return nil, utils.ErrorHandler(err, "Invalid Teacher Id")
 	}
@@ -198,7 +197,7 @@ func GetStudentCountByTeacherIdFromDb(ctx context.Context, teacherId string) (in
 	}
 	defer client.Disconnect(ctx)
 
-	objId, err := primitive.ObjectIDFromHex(teacherId)
+	objId, err := bson.ObjectIDFromHex(teacherId)
 	if err != nil {
 		return 0, utils.ErrorHandler(err, "Invalid Teacher Id")
 	}

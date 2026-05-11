@@ -1,6 +1,6 @@
 go get google.golang.org/grpc
-go get go.mongodb.org/mongo-driver/bson
-go get go.mongodb.org/mongo-driver/mongo/options
+go get go.mongodb.org/mongo-driver/v2/bson
+go get go.mongodb.org/mongo-driver/v2/mongo/options
 go get github.com/envoyproxy/protoc-gen-validate
 go get github.com/joho/godotenv
 go get github.com/go-mail/mail/v2

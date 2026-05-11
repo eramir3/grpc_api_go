@@ -14,7 +14,7 @@ func decodeEntities[T any, M any](ctx context.Context, cursor *mongo.Cursor, new
 	var entities []*T
 	for cursor.Next(ctx) {
 		model := newModel()
-		err := cursor.Decode(&model)
+		err := cursor.Decode(model)
 		if err != nil {
 			return nil, utils.ErrorHandler(err, "Internal Error")
 		}

@@ -7,8 +7,7 @@ import (
 	"reflect"
 	"strings"
 
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
 func buildFilter(object interface{}, model interface{}) (bson.M, error) {
@@ -45,7 +44,7 @@ func buildFilter(object interface{}, model interface{}) (bson.M, error) {
 			bsonTag := modelType.Field(i).Tag.Get("bson")
 			bsonTag = strings.TrimSuffix(bsonTag, ",omitempty")
 			if bsonTag == "_id" {
-				objId, err := primitive.ObjectIDFromHex(reqVal.FieldByName(fieldName).Interface().(string))
+				objId, err := bson.ObjectIDFromHex(reqVal.FieldByName(fieldName).Interface().(string))
 				if err != nil {
 					return nil, utils.ErrorHandler(err, "Invalid Id")
 				}

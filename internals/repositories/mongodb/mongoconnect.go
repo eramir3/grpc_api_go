@@ -11,7 +11,11 @@ import (
 
 func CreateMongoClient() (*mongo.Client, error) {
 	ctx := context.Background()
-	client, err := mongo.Connect(options.Client().ApplyURI("mongodb+srv://estebanramirezcc_db_user:79kopShZilmmn0MA@cluster0.scjbqo6.mongodb.net/?appName=Cluster0"))
+	clientOptions := options.Client().
+		ApplyURI("mongodb+srv://estebanramirezcc_db_user:79kopShZilmmn0MA@cluster0.scjbqo6.mongodb.net/?appName=Cluster0").
+		SetBSONOptions(&options.BSONOptions{ObjectIDAsHexString: true})
+
+	client, err := mongo.Connect(clientOptions)
 
 	if err != nil {
 		return nil, utils.ErrorHandler(err, "Unable to connect to database")
