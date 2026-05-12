@@ -43,10 +43,10 @@ func (s *Server) GetExecs(ctx context.Context, req *pb.GetExecsRequest) (*pb.Exe
 	// 	return nil, status.Error(codes.InvalidArgument, err.Error())
 	// }
 
-	// err = utils.AuthorizeUser(ctx, "admin", "manager")
-	// if err != nil {
-	// 	return nil, utils.ErrorHandler(err, err.Error())
-	// }
+	err := utils.AuthorizeUser(ctx, "admin", "manager")
+	if err != nil {
+		return nil, utils.ErrorHandler(err, err.Error())
+	}
 	// Filtering, getting the filters from the request, another function
 	filter, err := buildFilter(req.Exec, &models.Exec{})
 	if err != nil {

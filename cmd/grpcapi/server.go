@@ -3,10 +3,12 @@ package main
 import (
 	"fmt"
 	"grpcapi/internals/api/handlers"
+	"grpcapi/internals/api/interceptors"
 	"grpcapi/internals/repositories/mongodb"
 	"log"
 	"net"
 	"os"
+	"time"
 
 	pb "grpcapi/proto/gen"
 
@@ -23,7 +25,8 @@ func main() {
 		log.Fatal("Error loading .env file:", err)
 	}
 
-	server := grpc.NewServer()
+	r := interceptors.NewRateLimiter(5, time.Minute)
+	server := grpc.NewServer(grpc.ChainUnaryInterceptor(interceptors.ResponseTimeInterceptor, r.RateLimitInterceptor, interceptors.AuthenticationInterceptor))
 
 	pb.RegisterExecsServiceServer(server, &handlers.Server{})
 	pb.RegisterStudentsServiceServer(server, &handlers.Server{})
